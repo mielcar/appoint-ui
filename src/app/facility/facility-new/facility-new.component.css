@@ -1,0 +1,9 @@
+.new-facility-form {
+  min-width: 300px;
+  max-width: 600px;
+  margin: 50px auto;
+}
+
+.new-facility-input {
+  width: 100%;
+}
