@@ -1,0 +1,76 @@
+<mat-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="generalFormGroup">
+    <form [formGroup]="generalFormGroup" class="new-facility-form">
+      <ng-template matStepLabel>Company information</ng-template>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Company Name</mat-label>
+        <input matInput placeholder="Company name" formControlName="companyCtrl" required>
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Your Name and Surname</mat-label>
+        <input matInput placeholder="First name, Last name" formControlName="nameCtrl" required>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Phone Country</mat-label>
+        <mat-select formControlName="phoneCountryCtrl" required>
+          <mat-option *ngFor="let country of countries" [value]="country.name">
+            {{country.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Phone Number</mat-label>
+        <input matInput placeholder="Phone Number" formControlName="phoneCtrl" required>
+      </mat-form-field>
+      <div>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="addressFormGroup">
+    <form [formGroup]="addressFormGroup" class="new-facility-form">
+      <ng-template matStepLabel>Your Address</ng-template>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Street Name</mat-label>
+        <input matInput placeholder="Street Name" formControlName="streetNameCtrl">
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Street Number</mat-label>
+        <input matInput placeholder="Street Number" formControlName="streetNumberCtrl">
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Apartment Number</mat-label>
+        <input matInput placeholder="Apartment Number" formControlName="apartmentNumberCtrl">
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>City</mat-label>
+        <input matInput placeholder="City" formControlName="cityCtrl" required>
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Zip Code</mat-label>
+        <input matInput placeholder="Zip Code" formControlName="zipCodeCtrl" required>
+      </mat-form-field>
+      <mat-form-field class="new-facility-input">
+        <mat-label>Country</mat-label>
+        <mat-select formControlName="countryCtrl" required>
+          <mat-option *ngFor="let country of countries" [value]="country.name">
+            {{country.displayName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <form class="new-facility-form">
+      <ng-template matStepLabel>Summary</ng-template>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button mat-stroked-button (click)="createNewFacility()">Create</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>
