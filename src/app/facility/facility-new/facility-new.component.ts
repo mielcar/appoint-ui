@@ -1,10 +1,12 @@
 import {Component} from '@angular/core';
-import {FormBuilder, Validators} from "@angular/forms";
+import {FormBuilder, Validators,} from "@angular/forms";
 import {Country} from "../../model/country";
 import {FacilityService} from "../../service/facility.service";
 import {Owner} from "../../model/owner";
 import {Address} from "../../model/address";
-import {GeoPoint} from "../../model/geoPoint";
+import {CreateFacilityRequest} from "../../request/create-facility-request";
+import {WorkMode} from "../../model/work-mode";
+import {OnSiteVisitPaymentType} from "../../model/on-site-visit-payment-type";
 
 @Component({
   selector: 'app-facility-new',
@@ -13,7 +15,13 @@ import {GeoPoint} from "../../model/geoPoint";
 })
 export class FacilityNewComponent {
 
+  defaultProductCategoryId = 'fd362b77-e7ed-4139-af97-83e132a65b2a';
+
   countries: Country[] = [new Country('Cyprus', 'CYPRUS')];
+
+  paymentTypes: string[] = Object.values(OnSiteVisitPaymentType)
+    .filter((v) => isNaN(Number(v)))
+    .map(v => v as string);
 
   generalFormGroup = this._formBuilder.group({
     nameCtrl: ['Paweł Tomek', Validators.required],
@@ -31,34 +39,31 @@ export class FacilityNewComponent {
     countryCtrl: ['CYPRUS', Validators.required],
   });
 
+  workModeFormGroup = this._formBuilder.group({
+    stationaryCtrl: [false],
+    onSiteVisitCtrl: [false],
+    maxDistanceCtrl: [123],
+    paymentTypeCtrl: ['FIXED'],
+    paymentValueCtrl: [456],
+    additionalRulesCtrl: ['additional rules']
+  });
+
   constructor(private _formBuilder: FormBuilder,
               private facilityService: FacilityService) {
   }
 
   createNewFacility() {
     const facilityName = this.generalFormGroup.get('companyCtrl')?.value || '';
-    const owner = this.createOwner();
-    const address = this.createAddress();
-    this.facilityService.createFacility(facilityName, owner, address).subscribe(facility => console.log(facility));
+    const owner = Owner.fromFormGroup(this.generalFormGroup);
+    const address = Address.fromFormGroup(this.addressFormGroup);
+    const workMode = WorkMode.fromFormGroup(this.workModeFormGroup);
+    const createFacilityRequest = new CreateFacilityRequest(facilityName, owner, address, this.defaultProductCategoryId, workMode);
+    this.facilityService.createFacility(createFacilityRequest).subscribe(facility => console.log(facility));
   }
 
-  private createOwner(): Owner {
-    return {
-      name: this.generalFormGroup.get('nameCtrl')?.value,
-      phoneNumber: this.generalFormGroup.get('phoneCtrl')?.value,
-      phoneNumberCountry: this.generalFormGroup.get('phoneCountryCtrl')?.value
-    }
-  }
-
-  private createAddress(): Address {
-    return {
-      streetName: this.addressFormGroup.get('streetNameCtrl')?.value,
-      streetNumber: this.addressFormGroup.get('streetNumberCtrl')?.value,
-      apartmentNumber: this.addressFormGroup.get('apartmentNumberCtrl')?.value,
-      city: this.addressFormGroup.get('cityCtrl')?.value,
-      zipCode: this.addressFormGroup.get('zipCodeCtrl')?.value,
-      country: this.addressFormGroup.get('countryCtrl')?.value,
-      pin: new GeoPoint(123, 456)
-    }
+  shouldShowPaymentValueField() {
+    const paymentType = this.workModeFormGroup.controls['paymentTypeCtrl'].value
+    return paymentType !== null && [OnSiteVisitPaymentType.FIXED, OnSiteVisitPaymentType.VARYING, OnSiteVisitPaymentType.STARTING_FROM]
+      .includes(OnSiteVisitPaymentType[paymentType as keyof typeof OnSiteVisitPaymentType]);
   }
 }
