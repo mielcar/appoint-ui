@@ -1,9 +1,13 @@
 .new-facility-form {
   min-width: 300px;
   max-width: 600px;
-  margin: 50px auto;
+  margin: 30px auto;
 }
 
 .new-facility-input {
   width: 100%;
+}
+
+.visit-config-box {
+  margin-bottom: 20px;
 }

@@ -1,5 +1,6 @@
 <mat-stepper [linear]="true" #stepper>
   <mat-step [stepControl]="generalFormGroup">
+    <h3 class="new-facility-form">General information about your company</h3>
     <form [formGroup]="generalFormGroup" class="new-facility-form">
       <ng-template matStepLabel>Company information</ng-template>
       <mat-form-field class="new-facility-input">
@@ -27,6 +28,17 @@
       </div>
     </form>
   </mat-step>
+
+  <mat-step [stepControl]="generalFormGroup">
+    <h3 class="new-facility-form">What is the main category of your company? Allow your clients to find you easily!</h3>
+    <form [formGroup]="generalFormGroup" class="new-facility-form">
+      <ng-template matStepLabel>Company category</ng-template>
+      <div>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
   <mat-step [stepControl]="addressFormGroup">
     <form [formGroup]="addressFormGroup" class="new-facility-form">
       <ng-template matStepLabel>Your Address</ng-template>
@@ -64,6 +76,48 @@
       </div>
     </form>
   </mat-step>
+
+  <mat-step [stepControl]="workModeFormGroup">
+    <h3 class="new-facility-form">Do you provide on-client-site visits? Do you provide services in your address?</h3>
+    <form [formGroup]="workModeFormGroup" class="new-facility-form">
+      <ng-template matStepLabel>Work mode</ng-template>
+
+      <div class="visit-config-box">
+        <mat-checkbox class="new-facility-input" formControlName="stationaryCtrl">Service in premises</mat-checkbox>
+
+        <mat-checkbox class="new-facility-input" formControlName="onSiteVisitCtrl">On client site visit</mat-checkbox>
+      </div>
+
+      <div *ngIf="workModeFormGroup.controls['onSiteVisitCtrl'].value">
+        <mat-form-field class="new-facility-input">
+          <mat-label>Visit radius</mat-label>
+          <input matInput placeholder="Max visit distance" formControlName="maxDistanceCtrl" required>
+        </mat-form-field>
+        <mat-form-field class="new-facility-input">
+          <mat-label>On site visit payment</mat-label>
+          <mat-select formControlName="paymentTypeCtrl" required>
+            <mat-option *ngFor="let paymentType of paymentTypes" [value]="paymentType">
+              {{paymentType}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="new-facility-input" *ngIf="shouldShowPaymentValueField()">
+          <mat-label>Visit payment value</mat-label>
+          <input matInput type="number" placeholder="Value of visit payment" formControlName="paymentValueCtrl" required>
+        </mat-form-field>
+        <mat-form-field class="new-facility-input">
+          <mat-label>Additional rules</mat-label>
+          <input matInput placeholder="Additional on site visit regulations" formControlName="additionalRulesCtrl">
+        </mat-form-field>
+      </div>
+
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-stroked-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
   <mat-step>
     <form class="new-facility-form">
       <ng-template matStepLabel>Summary</ng-template>
